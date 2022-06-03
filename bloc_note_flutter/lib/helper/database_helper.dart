@@ -12,6 +12,11 @@ class DatabaseHelper {
     }, version: 1);
   }
 
+  static Future delete(int id) async {
+    final database = await DatabaseHelper.database();
+    return database.delete('notes', where: 'id = ?', whereArgs: [id]);
+  }
+
   static Future insert(Map<String, Object> data) async {
     final database = await DatabaseHelper.database();
 

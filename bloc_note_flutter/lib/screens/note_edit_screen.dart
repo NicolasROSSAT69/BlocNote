@@ -6,6 +6,8 @@ import 'package:bloc_note_flutter/utils/constants.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import '../models/note.dart';
+import '../widgets/delete_popup.dart';
 import 'note_view_screen.dart';
 
 class NoteEditScreen extends StatefulWidget {
@@ -19,6 +21,33 @@ class _NoteEditScreenState extends State {
   final contentController = TextEditingController();
   File? _image = null;
   final picker = ImagePicker();
+
+  bool firstTime = true;
+  Note? selectedNote;
+  int? id;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (firstTime) {
+      id = ModalRoute.of(this.context)!.settings.arguments as int;
+
+      if (id != null) {
+        selectedNote =
+            Provider.of<NoteProvider>(this.context, listen: false).getNote(id!);
+
+        titleController.text = selectedNote!.title;
+        contentController.text = selectedNote!.content;
+
+        if (selectedNote?.imagePath != null) {
+          _image = File(selectedNote!.imagePath);
+        }
+      }
+
+      firstTime = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +80,11 @@ class _NoteEditScreenState extends State {
             icon: Icon(Icons.delete),
             color: Colors.black,
             onPressed: () {
-              Navigator.pop(context);
+              if (id != null) {
+                _showDialog();
+              } else {
+                Navigator.pop(context);
+              }
             },
           ),
         ],
@@ -172,10 +205,24 @@ class _NoteEditScreenState extends State {
     String content = contentController.text.trim();
     String? imagePath = _image != null ? _image!.path : null;
 
-    int id = DateTime.now().millisecondsSinceEpoch;
-    Provider.of<NoteProvider>(this.context, listen: false)
-        .addOrUpdateNote(id, title, content, imagePath!, EditMode.ADD);
-    Navigator.of(this.context)
-        .pushReplacementNamed(NoteViewScreen.route, arguments: id);
+    if (id != null) {
+      Provider.of<NoteProvider>(this.context, listen: false)
+          .addOrUpdateNote(id!, title, content, imagePath!, EditMode.UPDATE);
+      Navigator.of(this.context).pop();
+    } else {
+      int id = DateTime.now().millisecondsSinceEpoch;
+      Provider.of<NoteProvider>(this.context, listen: false)
+          .addOrUpdateNote(id, title, content, imagePath!, EditMode.ADD);
+      Navigator.of(this.context)
+          .pushReplacementNamed(NoteViewScreen.route, arguments: id);
+    }
+  }
+
+  void _showDialog() {
+    showDialog(
+        context: this.context,
+        builder: (context) {
+          return DeletePopUp(selectedNote: selectedNote!);
+        });
   }
 }

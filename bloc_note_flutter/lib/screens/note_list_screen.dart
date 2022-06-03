@@ -51,7 +51,7 @@ class NoteListScreen extends StatelessWidget {
                 onPressed: () {
                   goToNoteEditScreen(context);
                 },
-                child: Icon(Icons.add),
+                child: const Icon(Icons.add),
               ),
             );
           }
@@ -68,7 +68,7 @@ class NoteListScreen extends StatelessWidget {
     return GestureDetector(
       onTap: _launchUrl,
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: headerColor,
         ),
         height: 100,
@@ -105,20 +105,20 @@ class NoteListScreen extends StatelessWidget {
         header(),
         Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 50.0),
-              child: Image.asset(
-                'crying_emoji.png',
-                fit: BoxFit.cover,
-                width: 200,
-                height: 200,
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 50.0),
+            //   child: Image.asset(
+            //     'crying_emoji.png',
+            //     fit: BoxFit.cover,
+            //     width: 200,
+            //     height: 200,
+            //   ),
+            // ),
             RichText(
               text: TextSpan(
                 style: noNotesStyle,
                 children: [
-                  TextSpan(text: ' Pas de note\nTape sur "'),
+                  const TextSpan(text: 'Pas de note \n Tape sur "'),
                   TextSpan(
                       text: '+',
                       style: boldPlus,
@@ -126,7 +126,7 @@ class NoteListScreen extends StatelessWidget {
                         ..onTap = () {
                           goToNoteEditScreen(context);
                         }),
-                  TextSpan(text: '" nouvelle note'),
+                  const TextSpan(text: '" nouvelle note'),
                 ],
               ),
             )

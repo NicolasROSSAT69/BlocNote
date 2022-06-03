@@ -10,6 +10,16 @@ class NoteProvider with ChangeNotifier {
     return [..._items];
   }
 
+  Future deleteNote(int id) {
+    _items.removeWhere((element) => element.id == id);
+    notifyListeners();
+    return DatabaseHelper.delete(id);
+  }
+
+  Note getNote(int id) {
+    return _items.firstWhere((note) => note.id == id, orElse: () => null);
+  }
+
   Future addOrUpdateNote(int id, String title, String content, String imagePath,
       EditMode editMode) async {
     final note = Note(id, title, content, imagePath);
