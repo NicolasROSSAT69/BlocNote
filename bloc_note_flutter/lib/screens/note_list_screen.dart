@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
 
 import '../helper/note_provider.dart';
+import '../widgets/list_item.dart';
 import 'note_edit_screen.dart';
 
 class NoteListScreen extends StatelessWidget {
@@ -25,7 +26,26 @@ class NoteListScreen extends StatelessWidget {
               body: Consumer<NoteProvider>(
                 child: noNotesUI(context),
                 builder: (context, noteprovider, child) =>
-                    noteprovider.items.length <= 0 ? child : Container(),
+                    noteprovider.items.length <= 0
+                        ? child
+                        : ListView.builder(
+                            itemCount: noteprovider.items.length + 1,
+                            itemBuilder: (context, index) {
+                              if (index == 0) {
+                                return header();
+                              } else {
+                                final i = index - 1;
+                                final item = noteprovider.items[i];
+                                return ListItem(
+                                  id: item.id,
+                                  title: item.title,
+                                  content: item.content,
+                                  imagePath: item.imagePath,
+                                  date: item.date,
+                                );
+                              }
+                            },
+                          ),
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
