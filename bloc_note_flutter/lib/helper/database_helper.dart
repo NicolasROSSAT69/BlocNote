@@ -12,6 +12,13 @@ class DatabaseHelper {
     }, version: 1);
   }
 
+  static Future insert(Map<String, Object> data) async {
+    final database = await DatabaseHelper.database();
+
+    database.insert("notes", data,
+        conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
   static Future<List<Map<String, dynamic>>> getNotesFromDB() async {
     final database = await DatabaseHelper.database();
 
